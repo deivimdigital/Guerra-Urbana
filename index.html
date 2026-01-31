@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Guerra Urbana</title>
+
+<style>
+body {
+  margin: 0;
+  background: #111;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+.hidden { display: none; }
+
+button {
+  padding: 12px 25px;
+  margin: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  background: #333;
+  color: #fff;
+  border: none;
+}
+
+button:hover {
+  background: #555;
+}
+
+#game {
+  margin-top: 20px;
+}
+
+.status {
+  margin: 10px;
+  font-size: 18px;
+}
+
+.enemy {
+  margin-top: 30px;
+  font-size: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- MENU -->
+<div id="menu">
+  <h1>🔥 Guerra Urbana 🔥</h1>
+  <p>Escolha seu lado</p>
+  <button onclick="startGame('Polícia')">Polícia</button>
+  <button onclick="startGame('Facção A')">Facção A</button>
+  <button onclick="startGame('Facção B')">Facção B</button>
+</div>
+
+<!-- JOGO -->
+<div id="game" class="hidden">
+  <h2 id="faction"></h2>
+
+  <div class="status">
+    ❤️ Vida: <span id="life">100</span><br>
+    💰 Dinheiro: R$ <span id="money">0</span><br>
+    🔫 Arma: <span id="weapon">Revólver .38</span>
+  </div>
+
+  <div class="enemy">
+    👤 Inimigo<br>
+    ❤️ Vida: <span id="enemyLife">50</span>
+  </div>
+
+  <button onclick="attack()">Atacar</button>
+  <button onclick="melee()">Soco / Chute</button>
+  <button onclick="upgrade()">Comprar Arma (R$50)</button>
+</div>
+
+<script>
+let player = {
+  life: 100,
+  money: 0,
+  weapon: "Revólver .38",
+  damage: 10
+};
+
+let enemy = {
+  life: 50,
+  damage: 8
+};
+
+function startGame(faction) {
+  document.getElementById("menu").classList.add("hidden");
+  document.getElementById("game").classList.remove("hidden");
+  document.getElementById("faction").innerText = "Facção: " + faction;
+}
+
+function updateScreen() {
+  document.getElementById("life").innerText = player.life;
+  document.getElementById("money").innerText = player.money;
+  document.getElementById("weapon").innerText = player.weapon;
+  document.getElementById("enemyLife").innerText = enemy.life;
+}
+
+function enemyAttack() {
+  player.life -= enemy.damage;
+  if (player.life <= 0) {
+    alert("Você morreu!");
+    location.reload();
+  }
+}
+
+function attack() {
+  enemy.life -= player.damage;
+  if (enemy.life <= 0) {
+    player.money += 20;
+    enemy.life = 50;
+    alert("Inimigo derrotado! +R$20");
+  } else {
+    enemyAttack();
+  }
+  updateScreen();
+}
+
+function melee() {
+  enemy.life -= 5;
+  enemyAttack();
+  updateScreen();
+}
+
+function upgrade() {
+  if (player.money >= 50) {
+    player.money -= 50;
+    player.weapon = "Fuzil básico";
+    player.damage = 20;
+    alert("Arma melhorada!");
+    updateScreen();
+  } else {
+    alert("Dinheiro insuficiente!");
+  }
+}
+
+updateScreen();
+</script>
+
+</body>
+</html>
